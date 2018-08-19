@@ -3,11 +3,36 @@
 		<title></title>
 	</head>
 	<body>
+		<div id="debug"></div>
 		<script src="js/three.min.js"></script>
 		<script src="js/cannon.min.js"></script>
 		<script src="js/framework.js"></script>
 		<script>
-			game.init();
+			var test;
+			
+			game.init({
+				wrapperElement: document.body,
+				gameFrame: function() {
+					
+				},
+				after: function() {
+					console.log(this);
+					this.camera.position.z = 10;
+					this.camera.position.y = 2;
+				
+					test = this.addBox({
+						mass: 0,
+						sizeX: 2,
+						sizeY: 0.5,
+						materialColor: 0x555555,
+					});
+					
+					test = this.addBox({
+						positionY: 6,
+						materialColor: 0x999999,
+					});
+				},
+			});
 		</script>
 	</body>
 </html>
