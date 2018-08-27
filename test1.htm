@@ -8,19 +8,19 @@
 		<script src="js/cannon.min.js"></script>
 		<script src="js/framework.js"></script>
 		<script>
-			var test;
+			var ground, test;
 			
 			game.init({
 				wrapperElement: document.body,
 				gameFrame: function() {
-					
+					document.getElementById("debug").innerHTML = test.body.position.x;
 				},
 				after: function() {
 					console.log(this);
 					this.camera.position.z = 10;
 					this.camera.position.y = 2;
 				
-					test = this.addBox({
+					ground = this.addBox({
 						mass: 0,
 						sizeX: 2,
 						sizeY: 0.5,
@@ -31,6 +31,8 @@
 						positionY: 6,
 						materialColor: 0x999999,
 					});
+					
+					document.title = test.body.position.x;
 				},
 			});
 		</script>

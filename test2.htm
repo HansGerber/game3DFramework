@@ -1,0 +1,106 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<div id="debug"></div>
+		<script src="js/three.min.js"></script>
+		<script src="js/cannon.min.js"></script>
+		<script src="js/framework.js"></script>
+		<script src="js/three.pointerLockControls.js"></script>
+		<script>
+			// based on the following example:
+			// https://threejs.org/examples/misc_controls_pointerlock.html
+		
+			var test, pointerLockControls = null, velocity, direction, keysDown = {
+				w: false,
+				a: false,
+				s: false,
+				d: false,
+			}, prevTime = 0;
+			
+			game.init({
+				wrapperElement: document.body,
+				gameFrame: function() {
+					if(pointerLockControls){
+						var time = performance.now();
+						var delta = ( time - prevTime ) / 1000;
+						
+						velocity.x -= velocity.x * 10.0 * delta;
+						velocity.z -= velocity.z * 10.0 * delta;
+						
+						direction.x = Number( keysDown.a ) - Number( keysDown.d );
+						direction.z = Number( keysDown.w ) - Number( keysDown.s );
+						direction.normalize();
+
+						if (keysDown.a || keysDown.d) velocity.x -= direction.x * 400.0 * delta;
+						if (keysDown.w || keysDown.s) velocity.z -= direction.z * 400.0 * delta;
+
+						pointerLockControls.getObject().translateX( velocity.x * delta );
+						pointerLockControls.getObject().translateY( velocity.y * delta );
+						pointerLockControls.getObject().translateZ( velocity.z * delta );
+						
+						prevTime = time;
+					}
+				},
+				after: function() {
+					prevTime = performance.now();
+					
+					this.camera.position.y = 10;
+				
+					pointerLockControls = new THREE.PointerLockControls( this.camera );
+					pointerLockControls.enabled = true;
+					
+					this.scene.add( pointerLockControls.getObject() );
+				
+					velocity = new THREE.Vector3();
+					direction = new THREE.Vector3();
+				
+					test = this.addBox({
+						mass: 0,
+						sizeX: 1000,
+						sizeY: 1,
+						sizeZ: 1000,
+						materialColor: 0x557799,
+					});
+					
+					this.on("keydown", function(e) {
+						console.log(e.keyCode);
+						switch(e.keyCode){
+							case 87: // w
+								keysDown.w = true;
+							break;
+							case 65: // a
+								keysDown.a = true;
+							break;
+							case 83: // s
+								keysDown.s = true;
+							break;
+							case 68: // d
+								keysDown.d = true;
+							break;
+						}
+					}, false);
+					
+					this.on("keyup", function(e) {
+						console.log(e.keyCode);
+						switch(e.keyCode){
+							case 87: // w
+								keysDown.w = false;
+							break;
+							case 65: // a
+								keysDown.a = false;
+							break;
+							case 83: // s
+								keysDown.s = false;
+							break;
+							case 68: // d
+								keysDown.d = false;
+							break;
+						}
+					}, false);
+				},
+			});
+		</script>
+	</body>
+</html>

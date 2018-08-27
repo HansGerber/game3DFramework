@@ -1,6 +1,7 @@
 var game = {
 	camera: null,
 	renderer: null,
+	canvas: null,
 	scene: null,
 	world: null,
 	renderTimer: null,
@@ -43,8 +44,8 @@ var game = {
 	},
 	on: function(eventName, eventHandler) {
 		if(this.eventsPermitted.indexOf(eventName) !== -1){
-			eventHandlers[eventName] = eventHandler.bind(this);
-			addEventListener(eventName, eventHandlers[eventName], false);
+			this.eventHandlers[eventName] = eventHandler.bind(this);
+			addEventListener(eventName, this.eventHandlers[eventName], false);
 			return true;
 		}
 		return false;
@@ -158,6 +159,8 @@ var game = {
 			options.renderWidth,
 			options.renderHeight
 		);
+		
+		this.canvas = this.renderer.domElement;
 		
 		// options overwrite
 		if(typeof options !== "undefined"){
