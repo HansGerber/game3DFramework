@@ -39,8 +39,7 @@ var game = {
 	updateMeshes: function() {
 		for(key in this.objects){
 			if(
-				typeof this.objects[key].mesh !== "undefined" && this.objects[key].mesh !== null &&
-				typeof this.objects[key].body !== "undefined" && this.objects[key].body !== null
+				this.objects[key].mesh !== null && this.objects[key].body !== null
 			){
 				this.objects[key].mesh.position.copy(
 					this.objects[key].body.position
