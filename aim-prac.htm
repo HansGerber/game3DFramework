@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<div id="debug"></div>
+		<script src="js/three.min.js"></script>
+		<script src="js/cannon.min.js"></script>
+		<script src="js/framework.js"></script>
+		<script>
+			var targets = [], mousePos = {x: 0, y: 0}, mouseSensitivity = 4, targetTimer = targetTimerDelay = 100;
+			var raycaster, mouse;
+			
+			function updateMousePos(e){
+				mousePos.x += e.movementX;
+				mousePos.y += e.movementY;
+			}
+			
+			function updateCameraPosition() {
+				if(document.pointerLockElement !== null){
+					game.camera.position.x = ( mousePos.x / game.gameOptions.renderWidth ) * mouseSensitivity - 1;
+					game.camera.position.y = - ( mousePos.y / game.gameOptions.renderHeight ) * mouseSensitivity + 1;
+				}
+			}
+		
+			game.init({
+				wrapperElement: document.body,
+				gameFrame: function() {
+					if(--targetTimer <= 0){
+						this.addBox({
+							mass: 0,
+							positionX: Math.ceil(Math.random() * 20 - 10),
+							positionY: Math.ceil(Math.random() * 20 - 10),
+							positionZ: Math.ceil(Math.random() * 20 - 20),
+							//materialColor: Math.ceil(Math.random() * 1000000)
+						})
+						
+						targetTimer = targetTimerDelay;
+					}
+					
+					raycaster.setFromCamera( mouse, this.camera );
+					var intersects = raycaster.intersectObjects( this.scene.children );
+					for ( var i = 0; i < this.scene.children.length; i++ ) {
+						this.scene.children[ i ].material.color.set( 0xffffff );
+					}
+					for ( var i = 0; i < intersects.length; i++ ) {
+						intersects[ i ].object.material.color.set( 0xff0000 );
+					}
+					
+				},
+				after: function() {
+					this.camera.position.z = 20;
+					mouse = new THREE.Vector2();
+					raycaster = new THREE.Raycaster();
+					
+					game.on('mousemove', function(e) {
+						updateMousePos(e);
+						updateCameraPosition();
+					}, false);
+					
+					game.on('pointerlockchange', function() {
+						updateCameraPosition();
+					}, false);
+					
+					game.canvas.addEventListener("click", (function() {
+						this.canvas.requestPointerLock();
+					}).bind(this), false);
+					
+				},
+			});
+		</script>
+	</body>
+</html>
