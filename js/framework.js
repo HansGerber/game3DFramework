@@ -21,7 +21,11 @@ var game = {
 	gameFrame: null,
 	gameOptions: {
 		timeStep:1/60,
-		gravity: -10,
+		gravity: {
+			x: 0,
+			y: -10,
+			z: 0,
+		},
 		fov: 45,
 		fps: 60,
 		renderWidth: 600,
@@ -34,12 +38,17 @@ var game = {
 	},
 	updateMeshes: function() {
 		for(key in this.objects){
-			this.objects[key].mesh.position.copy(
-				this.objects[key].body.position
-			)
-			this.objects[key].mesh.quaternion.copy(
-				this.objects[key].body.quaternion
-			)
+			if(
+				typeof this.objects[key].mesh !== "undefined" && this.objects[key].mesh !== null &&
+				typeof this.objects[key].body !== "undefined" && this.objects[key].body !== null
+			){
+				this.objects[key].mesh.position.copy(
+					this.objects[key].body.position
+				)
+				this.objects[key].mesh.quaternion.copy(
+					this.objects[key].body.quaternion
+				)
+			}
 		}
 	},
 	on: function(eventName, eventHandler) {
@@ -52,6 +61,8 @@ var game = {
 	},
 	addBox: function(userOptions) {
 		var options = {
+			hasMesh: true,
+			hasBody: true,
 			sizeX: 1,
 			sizeY: 1,
 			sizeZ: 1,
@@ -72,53 +83,64 @@ var game = {
 			key: 0,
 		}
 
-		var shape = new CANNON.Box(	
-			new CANNON.Vec3(
-				options.sizeX,
-				options.sizeY,
-				options.sizeZ
-			)
-		);
+		var body = null, mesh = null;
 		
-		var body = new CANNON.Body({
-			mass: options.mass,
-		});
+		if(options.hasBody){
+			body = new CANNON.Body({
+				mass: options.mass,
+			});
 		
-		body.addShape(shape);
-		body.position.x = options.positionX;
-		body.position.y = options.positionY;
-		body.position.z = options.positionZ;
+			var shape = new CANNON.Box(	
+				new CANNON.Vec3(
+					options.sizeX,
+					options.sizeY,
+					options.sizeZ
+				)
+			);
+			
+			var body = new CANNON.Body({
+				mass: options.mass,
+			});
+			
+			body.addShape(shape);
+			body.position.x = options.positionX;
+			body.position.y = options.positionY;
+			body.position.z = options.positionZ;
 		
-		var meshGeometry = new THREE.BoxGeometry(
-			options.sizeX * 2,
-			options.sizeY * 2,
-			options.sizeZ * 2
-		)
-		var meshMaterial;
-		switch(options.materialType){
-			case 'lambert':
-				meshMaterial = new THREE.MeshLambertMaterial({
-					color: options.materialColor,
-					fog: options.materialAffectedByFog,
-				});
-			break;
-			case 'phong':
-				meshMaterial = new THREE.MeshPhongMaterial({
-					color: options.materialColor,
-					fog: options.materialAffectedByFog,
-				});
-			break;
-			default:
-				meshMaterial = new THREE.MeshBasicMaterial({
-					color: options.materialColor,
-					fog: options.materialAffectedByFog,
-				});
-			break;
 		}
-		var mesh = new THREE.Mesh(
-			meshGeometry,
-			meshMaterial
-		);
+		
+		if(options.hasMesh){
+			var meshGeometry = new THREE.BoxGeometry(
+				options.sizeX * 2,
+				options.sizeY * 2,
+				options.sizeZ * 2
+			)
+			var meshMaterial;
+			switch(options.materialType){
+				case 'lambert':
+					meshMaterial = new THREE.MeshLambertMaterial({
+						color: options.materialColor,
+						fog: options.materialAffectedByFog,
+					});
+				break;
+				case 'phong':
+					meshMaterial = new THREE.MeshPhongMaterial({
+						color: options.materialColor,
+						fog: options.materialAffectedByFog,
+					});
+				break;
+				default:
+					meshMaterial = new THREE.MeshBasicMaterial({
+						color: options.materialColor,
+						fog: options.materialAffectedByFog,
+					});
+				break;
+			}
+			mesh = new THREE.Mesh(
+				meshGeometry,
+				meshMaterial
+			);
+		}
 		
 		this.objectKeyIndex++;
 		
@@ -153,15 +175,22 @@ var game = {
 		// configure
 		this.world.broadphase = new CANNON.NaiveBroadphase();
 		this.world.solver.iterations = 10;
-		this.world.gravity.set(0, options.gravity, 0);
+		this.world.gravity.set(
+			options.gravity.x,
+			options.gravity.y,
+			options.gravity.z
+		);
 
 		this.renderer.setSize(
 			options.renderWidth,
 			options.renderHeight
 		);
-		
+
+		// set canvas object for quick access
 		this.canvas = this.renderer.domElement;
-		
+		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
+		this.canvas.exitPointerLock  = this.canvas.exitPointerLock  || this.canvas.mozExitPointerLock;
+
 		// options overwrite
 		if(typeof options !== "undefined"){
 			if("after" in options){
