@@ -157,6 +157,7 @@ var game = {
 	init: function(userOptions) {
 		var options = this.gameOptions;
 		
+		// default options overwrite
 		Object.assign(options, userOptions);
 		Object.assign(this.gameOptions, options);
 		

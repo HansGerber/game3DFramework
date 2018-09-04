@@ -18,7 +18,8 @@
 			
 			function updateCameraPosition() {
 				if(document.pointerLockElement !== null){
-					game.camera.position.x = ( mousePos.x / game.gameOptions.renderWidth ) * mouseSensitivity - 1;
+					//game.camera.position.x = ( mousePos.x / game.gameOptions.renderWidth ) * mouseSensitivity - 1;
+					game.camera.rotation.y = - ( mousePos.x / game.gameOptions.renderWidth ) * mouseSensitivity * 0.1;
 					game.camera.position.y = - ( mousePos.y / game.gameOptions.renderHeight ) * mouseSensitivity + 1;
 				}
 			}
