@@ -19,6 +19,7 @@ var game = {
 		'keypressed',
 	],
 	gameFrame: null,
+	gameFrameAfterRender: null,
 	gameOptions: {
 		timeStep:1/60,
 		gravity: {
@@ -199,6 +200,9 @@ var game = {
 			if("gameFrame" in options){
 				this.gameFrame = options.gameFrame;
 			}
+			if("gameFrameAfterRender" in options){
+				this.gameFrameAfterRender = options.gameFrameAfterRender;
+			}
 			if("events" in options){
 				for(name in options.events){
 					this.on(name, options.events[name].handler)
@@ -225,5 +229,9 @@ var game = {
 			this.scene,
 			this.camera
 		)
+		
+		if(this.gameFrameAfterRender !== null){
+			this.gameFrameAfterRender.bind(this)();
+		}
 	}
 }
