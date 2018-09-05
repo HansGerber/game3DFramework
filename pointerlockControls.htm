@@ -18,7 +18,7 @@
 				s: false,
 				d: false,
 			}, prevTime = 0;
-			
+
 			game.init({
 				wrapperElement: document.body,
 				gameFrame: function() {
@@ -46,13 +46,13 @@
 				},
 				after: function() {
 					prevTime = performance.now();
-					
-					this.camera.position.y = 10;
 				
 					pointerLockControls = new THREE.PointerLockControls( this.camera );
 					pointerLockControls.enabled = true;
 					
 					this.scene.add( pointerLockControls.getObject() );
+					pointerLockControls.getObject().translateY( 5 );
+					pointerLockControls.getObject().translateZ( 10 );
 				
 					velocity = new THREE.Vector3();
 					direction = new THREE.Vector3();
@@ -63,6 +63,15 @@
 						sizeY: 1,
 						sizeZ: 100,
 						materialColor: 0x557799,
+					});
+					
+					this.addBox({
+						mass: 1,
+						positionY: 50,
+						sizeX: 5,
+						sizeY: 5,
+						sizeZ: 5,
+						materialColor: 0x99ff33,
 					});
 					
 					this.on("keydown", function(e) {
