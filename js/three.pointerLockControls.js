@@ -8,6 +8,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 	camera.rotation.set( 0, 0, 0 );
 
+	// mouse rotation object
 	var pitchObject = new THREE.Object3D();
 	pitchObject.add( camera );
 
@@ -27,6 +28,7 @@ THREE.PointerLockControls = function ( camera ) {
 		yawObject.rotation.y -= movementX * 0.002;
 		pitchObject.rotation.x -= movementY * 0.002;
 
+		// only allow semicircular camera rotation vertically
 		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
 
 	};
