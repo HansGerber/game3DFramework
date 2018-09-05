@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<div id="debug"></div>
-		<script src="js/three.min.js"></script>
+		<script src="node_modules/three/build/three.min.js"></script>
 		<script src="js/cannon.min.js"></script>
 		<script src="js/framework.js"></script>
 		<script src="js/three.pointerLockControls.js"></script>
@@ -22,7 +22,8 @@
 			game.init({
 				wrapperElement: document.body,
 				gameFrame: function() {
-					if(pointerLockControls){
+					// WASD movement
+					if(pointerLockControls && this.pointerLocked === true){
 						var time = performance.now();
 						var delta = ( time - prevTime ) / 1000;
 						
@@ -67,6 +68,8 @@
 					this.on("keydown", function(e) {
 						console.log(e.keyCode);
 						switch(e.keyCode){
+							case 27: // escape
+							break;
 							case 87: // w
 								keysDown.w = true;
 							break;
@@ -98,7 +101,7 @@
 								keysDown.d = false;
 							break;
 						}
-					}, false);
+					});
 				},
 			});
 		</script>

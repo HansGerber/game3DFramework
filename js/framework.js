@@ -20,6 +20,8 @@ var game = {
 	],
 	gameFrame: null,
 	gameFrameAfterRender: null,
+	pointerLocked: false,
+	lockPointer: true,
 	gameOptions: {
 		timeStep:1/60,
 		gravity: {
@@ -192,6 +194,39 @@ var game = {
 		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
 		this.canvas.exitPointerLock  = this.canvas.exitPointerLock  || this.canvas.mozExitPointerLock;
 
+		if(this.lockPointer){
+			addEventListener("mousedown", (function(e) {
+				if(e.target == this.canvas){
+					this.canvas.requestPointerLock();
+				}
+			}).bind(this), false);
+			
+			addEventListener("keydown", (function(e) {
+				switch(e.keyDown){
+					case 27: // escape
+						this.canvas.exitPointerLock();
+					break;
+				}
+			}).bind(this), false);
+			
+			var onpointerlockchange = function() {
+				if(
+					document.pointerLockElement === this.canvas ||
+					document.mozPointerLockElement === this.canvas
+				) {
+					this.pointerLocked = true;
+				} else {
+					this.pointerLocked = false;
+				}
+			}
+			
+			if ("onpointerlockchange" in document) {
+				document.addEventListener('pointerlockchange', onpointerlockchange.bind(this), false);
+			} else if ("onmozpointerlockchange" in document) {
+				document.addEventListener('mozpointerlockchange', onpointerlockchange.bind(this), false);
+			}
+		}
+		
 		// options overwrite
 		if(typeof options !== "undefined"){
 			if("after" in options){
