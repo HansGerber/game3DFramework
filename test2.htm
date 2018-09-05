@@ -23,7 +23,7 @@
 				wrapperElement: document.body,
 				gameFrame: function() {
 					// WASD movement
-					if(pointerLockControls && this.pointerLocked === true){
+					if(pointerLockControls && this.gameOptions.pointerLocked === true){
 						var time = performance.now();
 						var delta = ( time - prevTime ) / 1000;
 						

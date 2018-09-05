@@ -21,7 +21,6 @@ var game = {
 	gameFrame: null,
 	gameFrameAfterRender: null,
 	pointerLocked: false,
-	lockPointer: true,
 	gameOptions: {
 		timeStep:1/60,
 		gravity: {
@@ -35,6 +34,7 @@ var game = {
 		renderHeight: 400,
 		renderNearDistance: 0.1,
 		renderFarDistance: 1000,
+		lockPointer: true,
 	},
 	getRatio: function() {
 		return this.gameOptions.renderWidth / this.gameOptions.renderHeight;
@@ -194,7 +194,7 @@ var game = {
 		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
 		this.canvas.exitPointerLock  = this.canvas.exitPointerLock  || this.canvas.mozExitPointerLock;
 
-		if(this.lockPointer){
+		if(options.lockPointer){
 			addEventListener("mousedown", (function(e) {
 				if(e.target == this.canvas){
 					this.canvas.requestPointerLock();
@@ -214,9 +214,9 @@ var game = {
 					document.pointerLockElement === this.canvas ||
 					document.mozPointerLockElement === this.canvas
 				) {
-					this.pointerLocked = true;
+					this.gameOptions.pointerLocked = true;
 				} else {
-					this.pointerLocked = false;
+					this.gameOptions.pointerLocked = false;
 				}
 			}
 			
