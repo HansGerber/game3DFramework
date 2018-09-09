@@ -1,0 +1,40 @@
+#crosshair {
+	position:absolute;
+	top:194.5px;
+	left:294.5px;
+	width:13px;
+	height:13px;
+}
+#crosshair #lineLeft,
+#crosshair #lineTop,
+#crosshair #lineRight,
+#crosshair #lineBottom {
+	position:absolute;
+	background:#0f0;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+#crosshair #lineLeft {
+	left:0;
+	top: 6px;
+	height:1px;
+	width:3px;
+}
+#crosshair #lineTop {
+	left:6px;
+	top: 0;
+	height:3px;
+	width:1px;
+}
+#crosshair #lineRight {
+	right:0;
+	top: 6px;
+	height:1px;
+	width:3px;
+}
+#crosshair #lineBottom {
+	left:6px;
+	bottom: 0;
+	height:3px;
+	width:1px;
+}

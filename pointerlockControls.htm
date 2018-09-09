@@ -1,8 +1,21 @@
 <html>
 	<head>
 		<title></title>
+		<link rel="stylesheet" href="css/crosshair.css" />
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+		</style>
 	</head>
 	<body>
+		<div id="crosshair">
+			<div id="lineLeft"></div>
+			<div id="lineTop"></div>
+			<div id="lineRight"></div>
+			<div id="lineBottom"></div>
+		</div>
 		<div id="debug"></div>
 		<script src="node_modules/three/build/three.min.js"></script>
 		<script src="js/cannon.min.js"></script>
@@ -12,37 +25,35 @@
 			// based on the following example:
 			// https://threejs.org/examples/misc_controls_pointerlock.html
 		
-			var test, pointerLockControls = null, velocity, direction, keysDown = {
+			var pointerLockControls = null, velocity, direction, keysDown = {
 				w: false,
 				a: false,
 				s: false,
 				d: false,
 			}, prevTime = 0;
-
+			
 			game.init({
 				wrapperElement: document.body,
 				gameFrame: function() {
 					// WASD movement
-					if(pointerLockControls && this.gameOptions.pointerLocked === true){
-						var time = performance.now();
-						var delta = ( time - prevTime ) / 1000;
-						
-						velocity.x -= velocity.x * 10.0 * delta;
-						velocity.z -= velocity.z * 10.0 * delta;
-						
-						direction.x = Number( keysDown.a ) - Number( keysDown.d );
-						direction.z = Number( keysDown.w ) - Number( keysDown.s );
-						direction.normalize();
+					var time = performance.now();
+					var delta = ( time - prevTime ) / 1000;
+					
+					velocity.x -= velocity.x * 10.0 * delta;
+					velocity.z -= velocity.z * 10.0 * delta;
+					
+					direction.x = Number( keysDown.a ) - Number( keysDown.d );
+					direction.z = Number( keysDown.w ) - Number( keysDown.s );
+					direction.normalize();
 
-						if (keysDown.a || keysDown.d) velocity.x -= direction.x * 400.0 * delta;
-						if (keysDown.w || keysDown.s) velocity.z -= direction.z * 400.0 * delta;
+					if (keysDown.a || keysDown.d) velocity.x -= direction.x * 600.0 * delta;
+					if (keysDown.w || keysDown.s) velocity.z -= direction.z * 600.0 * delta;
 
-						pointerLockControls.getObject().translateX( velocity.x * delta );
-						pointerLockControls.getObject().translateY( velocity.y * delta );
-						pointerLockControls.getObject().translateZ( velocity.z * delta );
-						
-						prevTime = time;
-					}
+					pointerLockControls.getObject().translateX( velocity.x * delta );
+					pointerLockControls.getObject().translateY( velocity.y * delta );
+					pointerLockControls.getObject().translateZ( velocity.z * delta );
+					
+					prevTime = time;
 				},
 				after: function() {
 					prevTime = performance.now();
@@ -56,8 +67,9 @@
 				
 					velocity = new THREE.Vector3();
 					direction = new THREE.Vector3();
-				
-					test = this.addBox({
+					
+					// ground plane
+					this.addBox({
 						mass: 0,
 						sizeX: 100,
 						sizeY: 1,
@@ -65,6 +77,7 @@
 						materialColor: 0x557799,
 					});
 					
+					// green falling box
 					this.addBox({
 						mass: 1,
 						positionY: 50,
