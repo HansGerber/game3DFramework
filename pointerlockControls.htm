@@ -35,25 +35,27 @@
 			game.init({
 				wrapperElement: document.body,
 				gameFrame: function() {
-					// WASD movement
-					var time = performance.now();
-					var delta = ( time - prevTime ) / 1000;
-					
-					velocity.x -= velocity.x * 10.0 * delta;
-					velocity.z -= velocity.z * 10.0 * delta;
-					
-					direction.x = Number( keysDown.a ) - Number( keysDown.d );
-					direction.z = Number( keysDown.w ) - Number( keysDown.s );
-					direction.normalize();
+					if(this.gameOptions.pointerLocked){
+						// WASD movement
+						var time = performance.now();
+						var delta = ( time - prevTime ) / 1000;
+						
+						velocity.x -= velocity.x * 10.0 * delta;
+						velocity.z -= velocity.z * 10.0 * delta;
+						
+						direction.x = Number( keysDown.a ) - Number( keysDown.d );
+						direction.z = Number( keysDown.w ) - Number( keysDown.s );
+						direction.normalize();
 
-					if (keysDown.a || keysDown.d) velocity.x -= direction.x * 600.0 * delta;
-					if (keysDown.w || keysDown.s) velocity.z -= direction.z * 600.0 * delta;
+						if (keysDown.a || keysDown.d) velocity.x -= direction.x * 600.0 * delta;
+						if (keysDown.w || keysDown.s) velocity.z -= direction.z * 600.0 * delta;
 
-					pointerLockControls.getObject().translateX( velocity.x * delta );
-					pointerLockControls.getObject().translateY( velocity.y * delta );
-					pointerLockControls.getObject().translateZ( velocity.z * delta );
-					
-					prevTime = time;
+						pointerLockControls.getObject().translateX( velocity.x * delta );
+						pointerLockControls.getObject().translateY( velocity.y * delta );
+						pointerLockControls.getObject().translateZ( velocity.z * delta );
+						
+						prevTime = time;
+					}
 				},
 				after: function() {
 					prevTime = performance.now();

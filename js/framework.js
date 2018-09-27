@@ -210,6 +210,7 @@ var game = {
 			}).bind(this), false);
 			
 			var onpointerlockchange = function() {
+				console.log("onpointerlockchange")
 				if(
 					document.pointerLockElement === this.canvas ||
 					document.mozPointerLockElement === this.canvas
